@@ -1,8 +1,9 @@
-import { CreateCatDto, ListAllEntities, UpdateCatDto } from '../dto';
+import { CreateCatDto } from '../dto';
+import { CatsService } from '../service/cats.service';
+import { Cat } from '../interfaces/cat.interface';
 export declare class CatsController {
-    create(createCatDto: CreateCatDto): string;
-    findAll(query: ListAllEntities): string;
-    findOne(id: string): string;
-    update(id: string, updateCatDto: UpdateCatDto): string;
-    remove(id: string): string;
+    private readonly catsService;
+    constructor(catsService: CatsService);
+    create(CreateCatDto: CreateCatDto): Promise<void>;
+    findAll(): Promise<Cat[]>;
 }

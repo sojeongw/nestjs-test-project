@@ -6,6 +6,7 @@ import { CatsService } from './cats/service/cats.service';
 
 @Module({
   imports: [],
+  // 만들어놓고 실제로 사용하려면 여기에 추가해야 한다.
   controllers: [AppController, CatsController],
   providers: [AppService, CatsService],
 })

@@ -1,57 +1,23 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { CreateCatDto, ListAllEntities, UpdateCatDto } from '../dto';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { CreateCatDto } from '../dto';
+import { CatsService } from '../service/cats.service';
+import { Cat } from '../interfaces/cat.interface';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Controller('cats')
 export class CatsController {
+  // 생성자로 catsService를 주입시킨다.
+  // The private readonly syntax는 catsService에 있는 멤버 변수를
+  // 즉시 같은 위치에서 선언하고 초기화 하도록 해준다.
+  constructor(private readonly catsService: CatsService) {}
+
   @Post()
-  create(@Body() createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
+  async create(@Body() CreateCatDto: CreateCatDto) {
+    this.catsService.create(CreateCatDto);
   }
 
   @Get()
-  findAll(@Query() query: ListAllEntities) {
-    return `This action returns all cats (limit: ${query.limit} items)`;
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
   }
-
-  @Get(':id') // URI에 적는 부분
-  findOne(@Param('id') id: string) {
-    return `This action returns a #${id} cat`;
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
-    // postman에서 json으로 적는건 body 내용
-    return `This action updates a #${id} cat`;
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `This action removes a #${id} cat`;
-  }
-  /*
-  @Get()
-  async findAll(): Promise<any[]> {
-    return [];
-  }
-
-  @Post()
-  async create(@Body() createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
-  }
-
-  // @Get() tells Nest to create a handler for a specific endpoint for HTTP requests
-  @Get(':a')
-  findOne(@Param('a') b): string {
-    return `This action returns a #${b} cat`;
-  }
-  */
 }
