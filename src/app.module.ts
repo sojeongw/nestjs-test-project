@@ -3,13 +3,22 @@ import {
   NestModule,
   MiddlewareConsumer,
   RequestMethod,
+  ValidationPipe,
 } from '@nestjs/common';
-import { LoggerMiddleware } from './logger.middleware';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { CatsModule } from './cats/cats.module';
 import { CatsController } from './cats/cats.controller';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [CatsModule],
+  // the approach to perform dependency injection for the pipe
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   // LoggerMiddleware for the /cats route handlers

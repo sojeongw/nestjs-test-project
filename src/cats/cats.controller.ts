@@ -5,10 +5,13 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  UsePipes,
+  Param,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto';
 import { CatsService } from './cats.service';
-import { Cat } from './interfaces/cat.interface';
+import { ParseIntPipe } from 'src/parse-int.pipe';
 
 @Controller('cats')
 export class CatsController {
@@ -17,9 +20,25 @@ export class CatsController {
   // 즉시 같은 위치에서 선언하고 초기화 하도록 해준다.
   constructor(private readonly catsService: CatsService) {}
 
+  /* a param-scoped pipe
   @Post()
-  async create(@Body() CreateCatDto: CreateCatDto) {
+  async create(@Body(new ValidationPipe()) CreateCatDto: CreateCatDto) {
     this.catsService.create(CreateCatDto);
+  }
+  */
+
+  // a pipe at a method level: use the @UsePipes() decorator.
+  @Post()
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(@Body() createCatDto: CreateCatDto) {
+    this.catsService.create(createCatDto);
+  }
+
+  // ParseIntPipe will be executed before the request reaches the corresponding handler,
+  // ensuring that it will always receive an integer for the id parameter.
+  @Get(':id')
+  async findOne(@Param('id', new ParseIntPipe()) id) {
+    return await this.catsService.findOne(id);
   }
 
   @Get()

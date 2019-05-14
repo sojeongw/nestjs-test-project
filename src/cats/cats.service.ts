@@ -13,4 +13,8 @@ export class CatsService {
   findAll(): Cat[] {
     return this.cats;
   }
+
+  findOne(id: any) {
+    throw new Error('Method not implemented.');
+  }
 }
